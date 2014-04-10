@@ -111,15 +111,15 @@
         events: ["keypress", "keyup"]
     };
 
-    Filter.eventNamespace = 'keyFilter';
-    Filter.dataKey        = 'keyFilter';
+    Filter.eventNamespace = 'keyfilter';
+    Filter.dataKey        = 'keyfilter';
 
     // Plugin initialization
     // ---------------------
 
-    var old = $.fn.keyFilter;
+    var old = $.fn.keyfilter;
 
-    $.fn.keyFilter = function(options) {
+    $.fn.keyfilter = function(options) {
         var method;
 
         if (isString(options)) {
@@ -148,8 +148,8 @@
         });
     };
 
-    $.fn.keyFilter.noConflict = function() {
-        $.fn.keyFilter = old;
+    $.fn.keyfilter.noConflict = function() {
+        $.fn.keyfilter = old;
     };
 
 
