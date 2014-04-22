@@ -69,6 +69,11 @@
                 if (code = extractCharCode(event)) {
                     symbol = String.fromCharCode(code);
 
+                    // accept clearance of the string
+                    if (symbol === "" && this.$element.val().length === 0) {
+                        return true;
+                    }
+
                     if (test && isRegExp(regexp = this.options.regexp)) {
                         test = test && regexp.test(symbol);
                         if (regexp.global) {
