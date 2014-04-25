@@ -49,7 +49,7 @@
 
     Filter.prototype = (function() {
         function extractCharCode(event) {
-            if (event.which !== 0 && event.keyCode !== 0 && !event.ctrlKey && !event.altKey && !event.metaKey) {
+            if ((event.keyCode !== 0 || event.which !== 0) && !event.ctrlKey && !event.altKey && !event.metaKey) {
                 return event.keyCode || event.charCode;
             }
 
@@ -68,11 +68,6 @@
 
                 if (code = extractCharCode(event)) {
                     symbol = String.fromCharCode(code);
-
-                    // accept clearance of the string
-                    if (symbol === "" && this.$element.val().length === 0) {
-                        return true;
-                    }
 
                     if (test && isRegExp(regexp = this.options.regexp)) {
                         test = test && regexp.test(symbol);
@@ -113,7 +108,7 @@
     Filter.DEFAULTS = {
         regexp: null,
         filter: null,
-        events: ["keypress", "keyup"]
+        events: ["keypress"]
     };
 
     Filter.eventNamespace = 'keyfilter';
