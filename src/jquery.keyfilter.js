@@ -48,12 +48,46 @@
     };
 
     Filter.prototype = (function() {
+        var KEYS, KEYS_RANGE;
+
+        KEYS = {
+            BACKSPACE: 8,
+            TAB:       9,
+            RETURN:    13,
+            ESC:       27,
+            SHIFT:     16,
+            CTRL:      17,
+            ALT:       18
+        }
+
+        KEYS_RANGE = {
+            SPECIALS: [18, 20],
+            NAV:      [33, 40]
+        };
+
         function extractCharCode(event) {
-            if ((event.keyCode !== 0 || event.which !== 0) && !event.ctrlKey && !event.altKey && !event.metaKey) {
-                return event.keyCode || event.charCode;
+            if (event.which !== 0 && !event.ctrlKey && !event.altKey && !event.metaKey) {
+                return event.which;
             }
 
             return null;
+        }
+
+        function isSymbolCode(code) {
+            var test;
+
+            test = true;
+            test = test && code !== KEYS.BACKSPACE;
+            test = test && code !== KEYS.TAB;
+            test = test && code !== KEYS.RETURN;
+            test = test && code !== KEYS.ESC;
+            test = test && code !== KEYS.SHIFT;
+            test = test && code !== KEYS.CTRL;
+            test = test && code !== KEYS.ALT;
+            test = test && (code < KEYS_RANGE.SPECIALS[0] || code > KEYS_RANGE.SPECIALS[1]);
+            test = test && (code < KEYS_RANGE.NAV[0] || code > KEYS_RANGE.NAV[1]);
+
+            return test;
         }
 
         return {
@@ -63,11 +97,11 @@
                 $.extend(true, this.options, options);
             },
 
-            filter: function(event) {
+            filter: function($event) {
                 var code, symbol, filter, regexp, length, test = true;
 
-                if (code = extractCharCode(event)) {
-                    symbol = String.fromCharCode(code);
+                if ((code = extractCharCode($event)) && isSymbolCode(code)) {
+                    symbol = String.fromCharCode(code)
 
                     if (test && isRegExp(regexp = this.options.regexp)) {
                         test = test && regexp.test(symbol);
@@ -81,13 +115,13 @@
                     }
 
                     if (!test) {
-                        event.preventDefault();
+                        $event.preventDefault();
                     }
 
                     return test;
                 }
 
-                return false;
+                return true;
             },
 
             restart: function() {
