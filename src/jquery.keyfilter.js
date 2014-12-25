@@ -98,7 +98,9 @@
             },
 
             filter: function($event) {
-                var code, symbol, filter, regexp, length, test = true;
+                var code, symbol, filter, regexp, length, test, notify, emit;
+
+                test = true;
 
                 if ((code = extractCharCode($event)) && isSymbolCode(code)) {
                     symbol = String.fromCharCode(code)
@@ -118,8 +120,14 @@
                         $event.preventDefault();
                     }
 
-                    this.$element.trigger(this.options.emit, test, symbol);
+                    if (isFunction(notify = this.options.onFilter)) {
+                        notify.call(null, symbol, test);
+                    }
 
+                    if (isString(emit = this.options.emit)) {
+                        this.$element.trigger(emit, symbol, test);    
+                    }
+                    
                     return test;
                 }
 
@@ -142,10 +150,11 @@
     })();
 
     Filter.DEFAULTS = {
-        regexp: null,
-        filter: null,
-        emit:   "keyfilter",
-        events: ["keypress"]
+        regexp:   null,
+        filter:   null,
+        onFilter: null,
+        emit:     null,
+        events:   ["keypress"]
     };
 
     Filter.eventNamespace = 'keyfilter';
