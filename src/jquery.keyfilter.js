@@ -104,19 +104,21 @@
                     symbol = String.fromCharCode(code)
 
                     if (test && isRegExp(regexp = this.options.regexp)) {
-                        test = test && regexp.test(symbol);
+                        test = regexp.test(symbol);
                         if (regexp.global) {
                             regexp.lastIndex = 0;
                         }
                     }
 
                     if (test && isFunction(filter = this.options.filter)) {
-                        test = test && filter.call(null, symbol, this.element);
+                        test = filter.call(null, symbol, this.element);
                     }
 
                     if (!test) {
                         $event.preventDefault();
                     }
+
+                    this.$element.trigger(this.options.emit, test, symbol);
 
                     return test;
                 }
@@ -142,6 +144,7 @@
     Filter.DEFAULTS = {
         regexp: null,
         filter: null,
+        emit:   "keyfilter",
         events: ["keypress"]
     };
 
